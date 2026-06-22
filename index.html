@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>ذاكر | الحركة الخطّية والدورانية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#05080d; --bg2:#0a0f17; --glass:rgba(18,28,44,.55); --glassB:rgba(0,229,208,.18);
+  --cyan:#00E5D0; --cyanDim:#0a8a82; --txt:#e8eef7; --sub:#8aa0b8; --line:rgba(255,255,255,.07);
+  --orn:#ffb454; --grn:#5fd38a; --red:#ff6b6b; --pur:#b388ff;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font-family:'Cairo',sans-serif;line-height:1.8;
+  overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;z-index:-2;
+  background:radial-gradient(900px 500px at 80% -5%,rgba(0,229,208,.10),transparent 60%),
+             radial-gradient(700px 500px at 0% 100%,rgba(179,136,255,.08),transparent 60%),var(--bg)}
+.mono{font-family:'JetBrains Mono',monospace}
+
+/* layout */
+.app{display:flex;min-height:100vh}
+.side{width:280px;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;
+  background:linear-gradient(180deg,rgba(10,15,23,.9),rgba(5,8,13,.9));
+  backdrop-filter:blur(14px);border-left:1px solid var(--line);padding:26px 18px;z-index:30}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.brand .logo{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:22px;
+  background:linear-gradient(135deg,#00E5D0,#0a8a82);box-shadow:0 6px 20px rgba(0,229,208,.35)}
+.brand h1{font-size:18px;font-weight:800}
+.brand p{font-size:12px;color:var(--sub)}
+.prog{margin:18px 0 22px}
+.prog .bar{height:8px;border-radius:20px;background:rgba(255,255,255,.08);overflow:hidden}
+.prog .fill{height:100%;width:0;border-radius:20px;background:linear-gradient(90deg,#00E5D0,#5fd38a);
+  transition:width .4s;box-shadow:0 0 14px rgba(0,229,208,.6)}
+.prog small{color:var(--sub);font-size:12px;display:block;margin-top:6px}
+.nav a{display:flex;align-items:center;gap:11px;padding:11px 14px;border-radius:11px;color:var(--sub);
+  text-decoration:none;font-weight:600;font-size:15px;margin:3px 0;transition:.18s;border:1px solid transparent}
+.nav a .n{font-size:18px;width:24px;text-align:center}
+.nav a:hover{background:rgba(255,255,255,.04);color:var(--txt)}
+.nav a.active{background:linear-gradient(135deg,rgba(0,229,208,.16),rgba(0,229,208,.04));
+  color:var(--cyan);border-color:var(--glassB);box-shadow:inset 0 0 18px rgba(0,229,208,.08)}
+
+/* main */
+.main{flex:1;max-width:920px;margin:0 auto;padding:0 30px 120px}
+.hero{padding:64px 0 30px;text-align:center}
+.hero .badge{display:inline-block;font-size:13px;color:var(--cyan);background:rgba(0,229,208,.08);
+  border:1px solid var(--glassB);padding:6px 16px;border-radius:30px;margin-bottom:18px;font-weight:600}
+.hero h2{font-size:clamp(30px,6vw,52px);font-weight:900;line-height:1.25;
+  background:linear-gradient(120deg,#fff 30%,#00E5D0);-webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;margin-bottom:14px}
+.hero p{color:var(--sub);font-size:17px;max-width:560px;margin:0 auto}
+
+section{scroll-margin-top:20px;padding:30px 0}
+.sec-h{display:flex;align-items:center;gap:13px;margin:14px 0 18px}
+.sec-h .ic{width:48px;height:48px;border-radius:13px;display:grid;place-items:center;font-size:24px;
+  background:var(--glass);border:1px solid var(--glassB);flex-shrink:0}
+.sec-h h3{font-size:27px;font-weight:800}
+.sec-h .en{color:var(--cyanDim);font-size:14px;font-weight:600;font-family:'JetBrains Mono'}
+
+.card{background:var(--glass);border:1px solid var(--line);border-radius:18px;padding:24px;margin:18px 0;
+  backdrop-filter:blur(10px);box-shadow:0 10px 40px rgba(0,0,0,.3)}
+.card.glow{border-color:var(--glassB);box-shadow:0 10px 50px rgba(0,229,208,.10)}
+p.lead{color:#cfe0f0;font-size:17px}
+.muted{color:var(--sub)}
+ul.tick{list-style:none;margin:12px 0}
+ul.tick li{padding:6px 0 6px 0;padding-right:30px;position:relative}
+ul.tick li::before{content:"◆";position:absolute;right:6px;color:var(--cyan);font-size:13px;top:11px}
+
+.callout{display:flex;gap:13px;padding:15px 18px;border-radius:13px;margin:16px 0;align-items:flex-start}
+.callout .i{font-size:21px;flex-shrink:0}
+.c-cy{background:rgba(0,229,208,.07);border:1px solid var(--glassB)}
+.c-or{background:rgba(255,180,84,.07);border:1px solid rgba(255,180,84,.2)}
+.c-gr{background:rgba(95,211,138,.07);border:1px solid rgba(95,211,138,.2)}
+.c-pu{background:rgba(179,136,255,.07);border:1px solid rgba(179,136,255,.2)}
+
+.formula{background:#04070b;border:1px solid var(--glassB);border-radius:13px;padding:18px;text-align:center;
+  font-size:23px;font-weight:700;color:var(--cyan);margin:16px 0;direction:ltr;font-family:'JetBrains Mono'}
+.formula small{display:block;color:var(--sub);font-size:13px;margin-top:8px;font-weight:400;font-family:'Cairo'}
+
+canvas{display:block;max-width:100%}
+.simwrap{display:flex;flex-direction:column;align-items:center;gap:8px}
+.controls{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:center;margin-top:6px}
+.ctrl{display:flex;flex-direction:column;gap:6px;align-items:center;min-width:150px}
+.ctrl label{font-size:14px;color:var(--sub)}
+.ctrl .val{font-size:22px;font-weight:800;color:var(--cyan);font-family:'JetBrains Mono'}
+input[type=range]{-webkit-appearance:none;width:200px;height:6px;border-radius:10px;
+  background:rgba(255,255,255,.12);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+  background:var(--cyan);cursor:pointer;box-shadow:0 0 12px rgba(0,229,208,.7)}
+input[type=number]{background:#04070b;border:1px solid var(--line);color:var(--txt);border-radius:10px;
+  padding:10px 12px;font-size:18px;width:120px;text-align:center;font-family:'JetBrains Mono'}
+.readout{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+.stat{background:#04070b;border:1px solid var(--line);border-radius:13px;padding:13px 20px;text-align:center;min-width:120px}
+.stat .k{font-size:13px;color:var(--sub)}
+.stat .v{font-size:26px;font-weight:800;color:var(--cyan);font-family:'JetBrains Mono'}
+.stat.or .v{color:var(--orn)} .stat.gr .v{color:var(--grn)}
+
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px;border-radius:12px;overflow:hidden;
+  border:1px solid var(--line)}
+th{background:rgba(0,229,208,.08);padding:12px 14px;text-align:right;font-weight:700;border:1px solid var(--line)}
+td{padding:12px 14px;border:1px solid var(--line);color:#cfe0f0}
+tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+
+img.ref{width:100%;border-radius:13px;margin:14px 0;border:1px solid var(--line)}
+details.ref{margin:14px 0}
+details.ref summary{cursor:pointer;color:var(--cyan);font-weight:700;padding:10px 0;list-style:none;display:flex;gap:8px;align-items:center}
+details.ref summary::before{content:"▸";transition:.2s}
+details.ref[open] summary::before{transform:rotate(90deg)}
+
+/* quiz */
+.q{margin:18px 0}
+.q .qt{font-weight:700;font-size:17px;margin-bottom:10px}
+.opt{display:block;padding:13px 16px;margin:8px 0;background:#04070b;border:1px solid var(--line);
+  border-radius:11px;cursor:pointer;transition:.15s;font-weight:600}
+.opt:hover{border-color:var(--glassB)}
+.opt.right{border-color:var(--grn);background:rgba(95,211,138,.12);color:var(--grn)}
+.opt.wrong{border-color:var(--red);background:rgba(255,107,107,.1);color:var(--red)}
+.opt.lock{pointer-events:none;opacity:.85}
+.score{text-align:center;font-size:24px;font-weight:800;margin-top:20px;display:none}
+
+.fab{position:fixed;bottom:20px;right:20px;z-index:40;display:none}
+.menuBtn{width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg,#00E5D0,#0a8a82);
+  border:none;color:#03110f;font-size:24px;cursor:pointer;box-shadow:0 8px 24px rgba(0,229,208,.4)}
+.foot{text-align:center;color:var(--sub);font-size:14px;margin-top:40px;padding-top:24px;border-top:1px solid var(--line)}
+
+@media(max-width:860px){
+  .side{position:fixed;right:-300px;transition:.3s;box-shadow:-10px 0 40px rgba(0,0,0,.6)}
+  .side.open{right:0}
+  .fab{display:block}
+  .main{padding:0 18px 120px}
+  .hero{padding:44px 0 20px}
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:25;display:none}
+  .overlay.show{display:block}
+}
+</style>
+</head>
+<body>
+
+<div class="overlay" id="ov" onclick="toggleMenu()"></div>
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="side" id="side">
+  <div class="brand">
+    <div class="logo">🔄</div>
+    <div><h1>ذاكر الدرس</h1><p>الوحدة 6 · الدرس 2</p></div>
+  </div>
+  <div class="prog">
+    <div class="bar"><div class="fill" id="pf"></div></div>
+    <small id="ps">تقدّمك في المذاكرة: 0%</small>
+  </div>
+  <nav class="nav" id="nav">
+    <a href="#s1"><span class="n">🌀</span> نوعا الحركة</a>
+    <a href="#s2"><span class="n">⚙️</span> نظام نقل الحركة</a>
+    <a href="#s3"><span class="n">🔧</span> تحويل دوراني ← خطّي</a>
+    <a href="#s4"><span class="n">📏</span> حاسبة المسافة والسرعة</a>
+    <a href="#s5"><span class="n">🤖</span> الأودومتري</a>
+    <a href="#s6"><span class="n">💎</span> الدقّة (ستيبر+لولب)</a>
+    <a href="#s7"><span class="n">✅</span> اختبر نفسك</a>
+  </nav>
+</aside>
+
+<main class="main">
+  <div class="hero">
+    <span class="badge">🤖 كورس الروبوتات التفاعلي</span>
+    <h2>الحركة الخطّية والدورانية</h2>
+    <p>ذاكر الدرس بسيميوليشنات حيّة — حرّك، جرّب، واحسب بنفسك.</p>
+  </div>
+
+  <!-- ============ S1 ============ -->
+  <section id="s1">
+    <div class="sec-h"><div class="ic">🌀</div><div><h3>نوعا الحركة</h3><div class="en">Rotational vs Linear</div></div></div>
+    <p class="lead">الموتور بطبيعته بيعمل حاجة واحدة بس: <b>بيلفّ</b> (حركة دورانية). لكن أحياناً عايزين حركة <b>خطّية</b> (خط مستقيم). جرّب العجلة بنفسك:</p>
+    <div class="card glow">
+      <div class="simwrap">
+        <canvas id="wheelCv" width="360" height="360"></canvas>
+        <div class="controls">
+          <div class="ctrl"><label>سرعة اللفّ (RPM)</label>
+            <input type="range" id="rpm" min="0" max="240" value="60">
+            <span class="val"><span id="rpmV">60</span> RPM</span></div>
+        </div>
+        <div class="readout">
+          <div class="stat"><div class="k">لفّات/ثانية</div><div class="v" id="rps">1.0</div></div>
+          <div class="stat gr"><div class="k">سرعة العجلة</div><div class="v" id="lin">20</div></div>
+          <div class="stat or"><div class="k">المحيط</div><div class="v" id="circ">20</div></div>
+        </div>
+        <p class="muted" style="margin-top:10px;font-size:14px">العجلة قطرها 6.5سم — السرعة الخطّية بتتغيّر مع الـRPM</p>
+      </div>
+    </div>
+    <ul class="tick">
+      <li><b>الدورانية:</b> لفّ حوالين محور — نقيسها بـ RPM. (عجل، تروس، سيرفو)</li>
+      <li><b>الخطّية:</b> حركة في خط مستقيم — نقيسها بـ متر/ثانية. (مكبس، ذراع، مصعد)</li>
+    </ul>
+    <details class="ref"><summary>📊 شوف الرسم التوضيحي</summary>
+      <img class="ref" src="01_two_motions.png" alt=""></details>
+  </section>
+
+  <!-- ============ S2 : POWER TRANSMISSION ============ -->
+  <section id="s2">
+    <div class="sec-h"><div class="ic">⚙️</div><div><h3>نظام نقل الحركة</h3><div class="en">Power Transmission</div></div></div>
+    <p class="lead">الموتور بيلفّ بسرعة ثابتة، بس إنت محتاج تتحكّم في <b>السرعة</b> و<b>العزم</b> اللي بيوصلوا للعجل. ده شغل <b>نظام نقل الحركة</b> — وأشهره <b>التروس (Gears)</b>.</p>
+
+    <div class="card glow">
+      <p style="text-align:center;font-weight:700;margin-bottom:6px">🔧 محاكاة نسبة التروس (Gear Ratio)</p>
+      <div class="simwrap">
+        <canvas id="gearCv" width="460" height="300"></canvas>
+        <div class="controls">
+          <div class="ctrl"><label>سنّ الترس الكبير (الخرج)</label>
+            <input type="range" id="teeth" min="10" max="60" value="40" step="2">
+            <span class="val"><span id="teethV">40</span> سنّة</span></div>
+        </div>
+        <div class="readout">
+          <div class="stat"><div class="k">نسبة التروس</div><div class="v" id="gr">1:4</div></div>
+          <div class="stat gr"><div class="k">السرعة</div><div class="v" id="gspeed">×0.25</div></div>
+          <div class="stat or"><div class="k">العزم</div><div class="v" id="gtorque">×4.0</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout c-or"><div class="i">⚖️</div><div>
+      <b>المقايضة الذهبية (Speed ↔ Torque):</b> لما تزوّد العزم، السرعة بتقلّ بنفس النسبة — والعكس. مفيش حاجة ببلاش! ترس خرج أكبر = عزم أعلى وسرعة أقل.</div></div>
+
+    <h3 style="margin-top:24px;font-size:20px">طرق نقل الحركة الأساسية</h3>
+    <table>
+      <tr><th>الطريقة</th><th>المميزات</th><th>الاستخدام</th></tr>
+      <tr><td><b>تروس (Gears)</b></td><td>عزم عالي، دقيق، نسب ثابتة</td><td>جيربوكس الموتور</td></tr>
+      <tr><td><b>سير وبكرة (Belt)</b></td><td>هادي، يمتصّ الصدمات، رخيص</td><td>محاور الطابعات</td></tr>
+      <tr><td><b>سلسلة (Chain)</b></td><td>قوي، ميزحلقش، لمسافات</td><td>الموتوسيكل، روبوتات كبيرة</td></tr>
+    </table>
+    <div class="formula">سرعة الخرج = سرعة الدخل × (سنّ الدخل ÷ سنّ الخرج)
+      <small>والعزم بيتعكس: كل ما السرعة تقلّ، العزم يزيد بنفس النسبة</small></div>
+  </section>
+
+  <!-- ============ S3 ============ -->
+  <section id="s3">
+    <div class="sec-h"><div class="ic">🔧</div><div><h3>تحويل دوراني ← خطّي</h3><div class="en">Rotary to Linear</div></div></div>
+    <p class="lead">الموتور بيلفّ، بس عايزين حركة مستقيمة. دي الآليات اللي بتحوّل — جرّب الـ Rack & Pinion:</p>
+    <div class="card glow">
+      <div class="simwrap">
+        <canvas id="rackCv" width="460" height="220"></canvas>
+        <p class="muted" style="font-size:14px">الترس بيلفّ ← القضيب المسنّن بيتحرك في خط مستقيم</p>
+      </div>
+    </div>
+    <table>
+      <tr><th>الآلية</th><th>الفكرة</th><th>الاستخدام</th></tr>
+      <tr><td><b>Rack &amp; Pinion</b></td><td>ترس على قضيب مسنّن</td><td>توجيه، بوابات</td></tr>
+      <tr><td><b>Lead Screw</b></td><td>صامولة على عمود مقلوظ</td><td>طابعات 3D، CNC</td></tr>
+      <tr><td><b>Belt &amp; Pulley</b></td><td>سير على بكرتين</td><td>حركة سريعة</td></tr>
+      <tr><td><b>Crank / Cam</b></td><td>لفّ ← ذهاب وإياب</td><td>مكابس</td></tr>
+    </table>
+    <details class="ref"><summary>📊 شوف الرسم التوضيحي للأربع آليات</summary>
+      <img class="ref" src="02_conversions.png" alt=""></details>
+  </section>
+
+  <!-- ============ S4 : CALCULATOR ============ -->
+  <section id="s4">
+    <div class="sec-h"><div class="ic">📏</div><div><h3>حاسبة المسافة والسرعة</h3><div class="en">Distance & Speed</div></div></div>
+    <p class="lead">دي أهم معادلة في الدرس: المسافة في لفّة = محيط العجلة. اكتب أرقامك واحسب فوراً:</p>
+    <div class="formula">المسافة في لفّة = π × القطر</div>
+    <div class="card glow">
+      <div class="controls" style="gap:24px">
+        <div class="ctrl"><label>قطر العجلة (سم)</label><input type="number" id="diam" value="6.5" step="0.1"></div>
+        <div class="ctrl"><label>عدد اللفّات</label><input type="number" id="revs" value="10" step="1"></div>
+        <div class="ctrl"><label>سرعة الموتور (RPM)</label><input type="number" id="rpmc" value="120" step="10"></div>
+      </div>
+      <div class="readout" style="margin-top:22px">
+        <div class="stat or"><div class="k">محيط اللفّة</div><div class="v" id="oCirc">20.4</div><div class="k">سم</div></div>
+        <div class="stat gr"><div class="k">المسافة الكليّة</div><div class="v" id="oDist">204</div><div class="k">سم</div></div>
+        <div class="stat"><div class="k">السرعة</div><div class="v" id="oSpeed">40.8</div><div class="k">سم/ث</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ S5 : ODOMETRY ============ -->
+  <section id="s5">
+    <div class="sec-h"><div class="ic">🤖</div><div><h3>الأودومتري</h3><div class="en">Odometry</div></div></div>
+    <p class="lead">إزاي الروبوت يعرف هو فين من غير GPS؟ بيعدّ لفّات العجلة بحساس <b>Encoder</b> ويضرب في المحيط. شغّل الروبوت وشوف:</p>
+    <div class="card glow">
+      <div class="simwrap">
+        <canvas id="odoCv" width="600" height="180"></canvas>
+        <div class="controls">
+          <button class="opt" style="background:linear-gradient(135deg,#00E5D0,#0a8a82);color:#03110f;border:none;font-weight:800;padding:12px 28px;width:auto" id="odoBtn" onclick="toggleOdo()">▶ شغّل الروبوت</button>
+        </div>
+        <div class="readout">
+          <div class="stat"><div class="k">لفّات العجلة</div><div class="v" id="odoRev">0</div></div>
+          <div class="stat gr"><div class="k">المسافة المقطوعة</div><div class="v" id="odoDist">0</div><div class="k">سم</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="callout c-cy"><div class="i">📌</div><div>لو عدّيت 10 لفّات وعجلتك محيطها 20سم → الروبوت مشى <b>200 سم بالظبط</b>. ده أساس الملاحة في الروبوتات.</div></div>
+  </section>
+
+  <!-- ============ S6 : PRECISION ============ -->
+  <section id="s6">
+    <div class="sec-h"><div class="ic">💎</div><div><h3>الدقّة: ستيبر + لولب</h3><div class="en">Stepper + Lead Screw</div></div></div>
+    <p class="lead">لو محتاج دقّة بالمللي (زي طابعة 3D)، تستخدم موتور <b>ستيبر</b> (بيتحرك خطوة خطوة) مع <b>عمود لولبي</b>.</p>
+    <div class="card">
+      <ul class="tick">
+        <li>كل خطوة في الستيبر = <b>1.8°</b> → يعني <b>200 خطوة = لفّة كاملة</b>.</li>
+        <li>لو اللولب بيمشي 1مم في اللفّة → كل خطوة بتحرّك <b>0.005مم</b> بس!</li>
+      </ul>
+    </div>
+    <details class="ref"><summary>📊 شوف الرسم التوضيحي</summary>
+      <img class="ref" src="06_precision.png" alt=""></details>
+  </section>
+
+  <!-- ============ S7 : QUIZ ============ -->
+  <section id="s7">
+    <div class="sec-h"><div class="ic">✅</div><div><h3>اختبر نفسك</h3><div class="en">Quiz</div></div></div>
+    <div class="card" id="quiz"></div>
+    <div class="score" id="score"></div>
+  </section>
+
+  <div class="foot">منصة الروبوتات التفاعلية · الوحدة 6 · الدرس 2 — صُمّم لمحمود 🤖</div>
+</main>
+</div>
+
+<div class="fab"><button class="menuBtn" onclick="toggleMenu()">☰</button></div>
+
+<script>
+const CY="#00E5D0", OR="#ffb454", GR="#5fd38a", SUB="#8aa0b8", BG="#04070b", LINE="rgba(255,255,255,.1)";
+const PI=Math.PI;
+function dpr(cv){const r=window.devicePixelRatio||1;const w=cv.width,h=cv.height;
+  cv.style.width=w+"px";cv.style.height=h+"px";cv.width=w*r;cv.height=h*r;
+  const c=cv.getContext("2d");c.scale(r,r);cv.__w=w;cv.__h=h;return c;}
+
+/* ===== S1: spinning wheel ===== */
+(function(){
+  const cv=document.getElementById("wheelCv");const c=dpr(cv);const W=cv.__w,H=cv.__h;
+  const cx=W/2,cy=H/2,R=120;
+  const D=6.5, circ=PI*D; // cm
+  let ang=0, rpm=60;
+  const rpmEl=document.getElementById("rpm");
+  rpmEl.addEventListener("input",()=>{rpm=+rpmEl.value;upd();});
+  function upd(){
+    document.getElementById("rpmV").textContent=rpm;
+    const rps=rpm/60;
+    document.getElementById("rps").textContent=rps.toFixed(1);
+    document.getElementById("lin").textContent=(circ*rps).toFixed(0);
+    document.getElementById("circ").textContent=circ.toFixed(0);
+  }
+  upd();
+  function draw(){
+    c.clearRect(0,0,W,H);
+    ang += (rpm/60)*(2*PI)/60; // per frame ~60fps
+    // glow ring
+    c.save();c.translate(cx,cy);c.rotate(ang);
+    c.beginPath();c.arc(0,0,R,0,2*PI);c.lineWidth=8;c.strokeStyle=CY;
+    c.shadowColor=CY;c.shadowBlur=18;c.stroke();c.shadowBlur=0;
+    // spokes
+    for(let i=0;i<6;i++){c.save();c.rotate(i*PI/3);
+      c.beginPath();c.moveTo(0,0);c.lineTo(0,-R+10);c.lineWidth=4;c.strokeStyle="rgba(0,229,208,.5)";c.stroke();c.restore();}
+    // marker dot
+    c.beginPath();c.arc(0,-R,9,0,2*PI);c.fillStyle=OR;c.fill();
+    c.beginPath();c.arc(0,0,11,0,2*PI);c.fillStyle=CY;c.fill();
+    c.restore();
+    // RPM text center
+    c.fillStyle=SUB;c.font="13px JetBrains Mono";c.textAlign="center";
+    c.fillText(rpm+" RPM", cx, cy+R+34);
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ===== S2: gear ratio ===== */
+(function(){
+  const cv=document.getElementById("gearCv");const c=dpr(cv);const W=cv.__w,H=cv.__h;
+  let ang=0, inTeeth=10, outTeeth=40;
+  const tEl=document.getElementById("teeth");
+  tEl.addEventListener("input",()=>{outTeeth=+tEl.value;upd();});
+  function upd(){
+    document.getElementById("teethV").textContent=outTeeth;
+    const ratio=outTeeth/inTeeth;
+    document.getElementById("gr").textContent="1:"+ratio.toFixed(ratio%1?1:0);
+    document.getElementById("gspeed").textContent="×"+(1/ratio).toFixed(2);
+    document.getElementById("gtorque").textContent="×"+ratio.toFixed(1);
+  }
+  upd();
+  function gear(x,y,r,teeth,a,col){
+    c.save();c.translate(x,y);c.rotate(a);
+    c.beginPath();c.arc(0,0,r,0,2*PI);c.lineWidth=4;c.strokeStyle=col;
+    c.shadowColor=col;c.shadowBlur=10;c.stroke();c.shadowBlur=0;
+    for(let i=0;i<teeth;i++){const t=i*2*PI/teeth;
+      c.save();c.rotate(t);c.fillStyle=col;c.fillRect(-3,-r-7,6,9);c.restore();}
+    c.beginPath();c.arc(0,0,5,0,2*PI);c.fillStyle=col;c.fill();
+    // direction tick
+    c.beginPath();c.moveTo(0,0);c.lineTo(0,-r+8);c.lineWidth=3;c.strokeStyle="rgba(255,255,255,.4)";c.stroke();
+    c.restore();
+  }
+  function draw(){
+    c.clearRect(0,0,W,H);
+    const inR=34, outR=inR*(outTeeth/inTeeth);
+    const cap=Math.min(outR,118); const scale=cap/outR;
+    const ir=inR*scale, or_=outR*scale;
+    const x1=130, x2=x1+ir+or_+2, y=H/2;
+    ang+=0.03;
+    gear(x1,y,ir,inTeeth,ang,CY);           // input small, fast
+    gear(x2,y,or_,outTeeth,-ang*(inTeeth/outTeeth),OR); // output big, slow, opposite
+    c.fillStyle=CY;c.font="12px JetBrains Mono";c.textAlign="center";
+    c.fillText("دخل "+inTeeth, x1, y+or_*0+ (cap>60?cap:60)+0);
+    c.fillStyle=SUB;c.fillText("الموتور", x1, H-12);
+    c.fillStyle=OR;c.fillText("الخرج", x2, H-12);
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ===== S3: rack & pinion ===== */
+(function(){
+  const cv=document.getElementById("rackCv");const c=dpr(cv);const W=cv.__w,H=cv.__h;
+  let ang=0;
+  function draw(){
+    c.clearRect(0,0,W,H);
+    ang+=0.04;
+    const gx=W/2, gy=80, r=46, teeth=14;
+    // pinion
+    c.save();c.translate(gx,gy);c.rotate(ang);
+    c.beginPath();c.arc(0,0,r,0,2*PI);c.lineWidth=4;c.strokeStyle=CY;
+    c.shadowColor=CY;c.shadowBlur=10;c.stroke();c.shadowBlur=0;
+    for(let i=0;i<teeth;i++){c.save();c.rotate(i*2*PI/teeth);c.fillStyle=CY;c.fillRect(-3,-r-7,6,9);c.restore();}
+    c.beginPath();c.arc(0,0,6,0,2*PI);c.fillStyle=CY;c.fill();
+    c.beginPath();c.moveTo(0,0);c.lineTo(0,-r+8);c.lineWidth=3;c.strokeStyle="rgba(255,255,255,.4)";c.stroke();
+    c.restore();
+    // rack — moves with sin of angle
+    const off=Math.sin(ang)*70;
+    const ry=gy+r+10;
+    c.save();c.translate(off,0);
+    c.fillStyle="rgba(255,255,255,.12)";c.fillRect(40,ry,W-80,22);
+    for(let i=0;i<16;i++){c.fillStyle=OR;c.fillRect(50+i*24,ry-10,12,10);}
+    c.restore();
+    // arrow
+    c.strokeStyle=OR;c.lineWidth=4;c.beginPath();
+    const dir=Math.cos(ang)>=0?1:-1;
+    c.moveTo(W/2-50*dir,ry+50);c.lineTo(W/2+50*dir,ry+50);c.stroke();
+    c.beginPath();c.moveTo(W/2+50*dir,ry+50);c.lineTo(W/2+50*dir-10*dir,ry+45);c.lineTo(W/2+50*dir-10*dir,ry+55);c.fillStyle=OR;c.fill();
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ===== S4: calculator ===== */
+(function(){
+  const d=document.getElementById("diam"),rv=document.getElementById("revs"),rc=document.getElementById("rpmc");
+  function calc(){
+    const diam=+d.value||0, revs=+rv.value||0, rpm=+rc.value||0;
+    const circ=PI*diam;
+    document.getElementById("oCirc").textContent=circ.toFixed(1);
+    document.getElementById("oDist").textContent=(circ*revs).toFixed(0);
+    document.getElementById("oSpeed").textContent=(circ*(rpm/60)).toFixed(1);
+  }
+  [d,rv,rc].forEach(e=>e.addEventListener("input",calc));calc();
+})();
+
+/* ===== S5: odometry robot ===== */
+let odoRun=false, odoX=70, odoAng=0, odoCirc=20;
+(function(){
+  const cv=document.getElementById("odoCv");const c=dpr(cv);const W=cv.__w,H=cv.__h;
+  const groundY=130, startX=70;
+  function draw(){
+    c.clearRect(0,0,W,H);
+    // ground
+    c.strokeStyle=LINE;c.lineWidth=3;c.beginPath();c.moveTo(20,groundY+34);c.lineTo(W-20,groundY+34);c.stroke();
+    if(odoRun){odoX+=1.4; odoAng+=1.4/22; if(odoX>W-90){odoRun=false;document.getElementById("odoBtn").textContent="▶ شغّل من الأول"; odoX=W-90;}}
+    // distance trail
+    c.strokeStyle=GR;c.lineWidth=4;c.beginPath();c.moveTo(startX,groundY+50);c.lineTo(odoX,groundY+50);c.stroke();
+    // robot body
+    c.fillStyle="rgba(0,229,208,.12)";c.strokeStyle=CY;c.lineWidth=2;
+    c.beginPath();c.roundRect(odoX-30,groundY-26,60,46,8);c.fill();c.stroke();
+    c.fillStyle=CY;c.font="16px Cairo";c.textAlign="center";c.fillText("🤖",odoX,groundY+4);
+    // wheels rotating
+    [-16,16].forEach(dx=>{c.save();c.translate(odoX+dx,groundY+30);c.rotate(odoAng);
+      c.beginPath();c.arc(0,0,13,0,2*PI);c.strokeStyle=OR;c.lineWidth=3;c.stroke();
+      c.beginPath();c.moveTo(0,0);c.lineTo(0,-11);c.strokeStyle=OR;c.lineWidth=2;c.stroke();c.restore();});
+    // readouts
+    const revs=(odoX-startX)/(2*PI*13*  (odoCirc/(2*PI*13)) ); // simplified below
+    const dist=(odoX-startX)/2.2; // px->cm scale (visual)
+    const realRev=odoAng/(2*PI);
+    document.getElementById("odoRev").textContent=realRev.toFixed(1);
+    document.getElementById("odoDist").textContent=(realRev*odoCirc).toFixed(0);
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+function toggleOdo(){const b=document.getElementById("odoBtn");
+  if(!odoRun && odoX>=560){odoX=70;odoAng=0;}
+  odoRun=!odoRun;b.textContent=odoRun?"⏸ إيقاف":"▶ شغّل الروبوت";}
+
+/* ===== S7: quiz ===== */
+const QUIZ=[
+  {q:"عجلة محيطها 25سم بتلفّ 4 لفّات. الروبوت مشى كام؟",
+   o:["100 سم","29 سم","6.25 سم","50 سم"],a:0},
+  {q:"أي آلية تدّيك أعلى دقّة في الحركة الخطّية؟",
+   o:["السير والبكرة","العمود اللولبي (Lead Screw)","الكامة","السلسلة"],a:1},
+  {q:"لو زوّدت سنّ ترس الخرج، إيه اللي بيحصل؟",
+   o:["السرعة تزيد والعزم يقلّ","السرعة تقلّ والعزم يزيد","الاتنين يزيدوا","مفيش تغيير"],a:1},
+  {q:"موتور 180 RPM = كام لفّة في الثانية؟",
+   o:["180","60","3","1.5"],a:2},
+  {q:"المسافة في لفّة واحدة بتساوي إيه؟",
+   o:["نصف القطر","π × القطر","القطر ÷ 2","2 × القطر"],a:1}
+];
+let answered=0, correct=0;
+(function(){
+  const box=document.getElementById("quiz");
+  QUIZ.forEach((item,qi)=>{
+    const d=document.createElement("div");d.className="q";
+    d.innerHTML='<div class="qt">'+(qi+1)+". "+item.q+'</div>';
+    item.o.forEach((opt,oi)=>{
+      const s=document.createElement("span");s.className="opt";s.textContent=opt;
+      s.onclick=()=>{
+        if(d.dataset.done)return; d.dataset.done=1; answered++;
+        [...d.querySelectorAll(".opt")].forEach(x=>x.classList.add("lock"));
+        if(oi===item.a){s.classList.add("right");correct++;}
+        else{s.classList.add("wrong");d.querySelectorAll(".opt")[item.a].classList.add("right");}
+        if(answered===QUIZ.length)showScore();
+        bumpProg();
+      };
+      d.appendChild(s);
+    });
+    box.appendChild(d);
+  });
+})();
+function showScore(){
+  const el=document.getElementById("score");el.style.display="block";
+  const pct=Math.round(correct/QUIZ.length*100);
+  let msg = pct>=80?"🏆 ممتاز يا محمود!":pct>=60?"👍 كويس، راجع تاني":"💪 ذاكر تاني وهتعرفها";
+  el.innerHTML='نتيجتك: <span style="color:#00E5D0">'+correct+"/"+QUIZ.length+'</span> · '+msg;
+  el.style.color="#e8eef7";
+}
+
+/* ===== nav scroll-spy + progress ===== */
+const links=[...document.querySelectorAll(".nav a")];
+const secs=links.map(a=>document.querySelector(a.getAttribute("href")));
+let visited=new Set();
+function bumpProg(){
+  // progress = visited sections + quiz answered
+  const total=secs.length+1;
+  let done=visited.size + (answered>0?answered/QUIZ.length:0);
+  const pct=Math.min(100,Math.round(done/total*100));
+  document.getElementById("pf").style.width=pct+"%";
+  document.getElementById("ps").textContent="تقدّمك في المذاكرة: "+pct+"%";
+}
+const io=new IntersectionObserver((es)=>{
+  es.forEach(e=>{if(e.isIntersecting){
+    const id="#"+e.target.id;
+    links.forEach(a=>a.classList.toggle("active",a.getAttribute("href")===id));
+    visited.add(e.target.id);bumpProg();
+  }});
+},{rootMargin:"-40% 0px -55% 0px"});
+secs.forEach(s=>io.observe(s));
+links.forEach(a=>a.addEventListener("click",()=>{if(window.innerWidth<860)toggleMenu();}));
+
+/* ===== mobile menu ===== */
+function toggleMenu(){
+  document.getElementById("side").classList.toggle("open");
+  document.getElementById("ov").classList.toggle("show");
+}
+</script>
+</body></html>
